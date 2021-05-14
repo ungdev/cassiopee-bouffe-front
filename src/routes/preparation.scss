@@ -1,0 +1,129 @@
+.preparation-mode-button {
+  padding: 0 10px;
+  width: 210px;
+  text-align: left;
+  height: 100%;
+  line-height: 50px;
+
+  &.downgrade {
+    background-color: var(--warning-dark);
+  }
+}
+
+#preparation {
+  display: flex;
+  height: calc(100% - 50px);
+  justify-content: space-between;
+  background-color: var(--primary);
+
+  .status {
+    margin: auto;
+    padding-top: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 0 14px;
+
+    &::-webkit-scrollbar {
+      width: 0 !important;
+    }
+
+    .title {
+      font-size: 1.5em;
+      line-height: 60px;
+    }
+
+    // Removes the visuals clics for pending (because you can't downgrade a pending order)
+    &.pending .orders .order .next.downgrade {
+      background-color: var(--danger-dark);
+    }
+  }
+
+  .status .orders .order {
+    background: var(--primary-light);
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+
+    .titles {
+      display: flex;
+      flex-direction: column;
+      margin: 5px 0;
+      width: 20%;
+
+      .place {
+        margin-bottom: 10px;
+        font-size: 1.75em;
+      }
+    }
+
+    .items {
+      text-align: left;
+      margin-right: auto;
+    }
+
+    .next {
+      background-color: var(--success);
+      width: 20%;
+      font-size: 2em;
+      position: relative;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: background-color 0.5s ease-in;
+
+      .fa {
+        transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+      }
+
+      &.downgrade {
+        background-color: var(--warning-dark);
+
+        .fa {
+          transform: rotateZ(180deg);
+        }
+      }
+
+      &:before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      &:hover {
+        filter: brightness(0.9);
+      }
+    }
+  }
+}
+
+.preparation-modal {
+  .actions {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+
+    .button {
+      display: inline-block;
+      padding: 40px 100px;
+      margin: 0 20px;
+
+      color: #fff;
+
+      &.cancel {
+        background: var(--danger);
+      }
+
+      &.confirm {
+        background: var(--success);
+      }
+
+      &:hover {
+        filter: brightness(0.9);
+      }
+    }
+  }
+}

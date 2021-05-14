@@ -1,0 +1,38 @@
+.navbar {
+  height: 50px;
+  margin: 0;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+
+  .back {
+    padding: 0 30px 0 15px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+  }
+
+  .title {
+    padding: 0 30px;
+    margin: auto;
+
+    .reload-icon {
+      font-size: 0.8em;
+      margin-right: 12px;
+    }
+  }
+
+  .absolute-left {
+    position: absolute;
+    left: 0;
+  }
+
+  .absolute-right {
+    position: absolute;
+    right: 0;
+  }
+
+  > *:hover {
+    filter: brightness(0.9);
+  }
+}

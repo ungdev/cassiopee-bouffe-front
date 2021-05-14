@@ -1,45 +1,68 @@
-import React, { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import React, { useEffect } from 'react';
+import moment from 'moment';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { toast, Flip } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import './App.scss';
 
-function App() {
-  const [count, setCount] = useState(0)
+import Index from './routes';
+
+import store from './reducers';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { State } from './types';
+import { autoLogin } from './reducers/auth';
+import Loader from './components/pageLoader';
+import Login from './routes/login';
+
+toast.configure({
+  autoClose: 3000,
+  pauseOnHover: true,
+  transition: Flip,
+  hideProgressBar: true,
+});
+
+// TODO: corriger la locale
+//moment.locale('fr');
+
+const MainRouter = () => {
+  const dispatch = useDispatch();
+  const state = useSelector((state: State) => state);
+
+  useEffect(() => {
+    dispatch(autoLogin());
+  }, []); // eslint-disable-line
+
+  if (!state.auth.token) return <Login />;
+
+  if (!state.server.socketConnected) {
+    return (
+      <Loader>
+        <div onClick={() => window.location.reload()}>
+          Serveur déconnecté
+          <br />
+          Tentative de reconnexion en cours
+        </div>
+      </Loader>
+    );
+  }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
-    </div>
-  )
-}
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Index} />
+        {/* <Route path="/preparation" component={Preparation} />
+          <Route path="/tv" component={Tv} />
+          <Route path="/items" component={Items} /> */}
+      </Switch>
+    </Router>
+  );
+};
 
-export default App
+const App = () => (
+  <Provider store={store}>
+    <MainRouter />
+  </Provider>
+);
+
+export default App;

@@ -1,0 +1,38 @@
+html,
+body {
+  background-color: var(--primary-dark);
+  color: var(--light);
+  text-align: center;
+  height: 100%;
+  margin: 0;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  user-select: none;
+}
+
+#root {
+  height: 100%;
+}
+
+:root {
+  --accent: #00adb5;
+  --accent-dark: #00565a;
+  --light: #eeeeee;
+  --primary-dark: #222831;
+  --primary: #393e46;
+  --primary-light: #4a505b;
+
+  --gradient: linear-gradient(135deg, #fb560c 15%, #e21562 85%);
+
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+
+  --success-dark: #1c7430;
+  --warning-dark: #b28704;
+  --danger-dark: #9a2530;
+}
+
+::-webkit-scrollbar {
+  width: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
