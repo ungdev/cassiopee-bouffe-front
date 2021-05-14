@@ -27,7 +27,6 @@ export interface Order {
 export interface Vendor {
   id: string;
   name: string;
-  items: Item[];
 }
 
 export enum Status {

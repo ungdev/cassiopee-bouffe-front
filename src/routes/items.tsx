@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react';
 import './items.scss';
 import Navbar from '../components/navbar';
 import Switch from '../components/UI/switch';
-import { useSelector } from 'react-redux';
-import { State, Item as ItemType, Order, Vendor } from '../types';
-import FontAwesome from 'react-fontawesome';
+import { Item as ItemType, Vendor } from '../types';
 import { formatPrice } from '../utils/helpers';
 import { API } from '../utils/api';
 

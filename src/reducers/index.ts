@@ -1,7 +1,7 @@
 import { createLogger } from 'redux-logger';
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
-import { combineReducers } from 'redux';
+
 import auth from './auth';
 import server from './server';
 import { State } from '../types';

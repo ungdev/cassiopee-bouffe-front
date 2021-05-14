@@ -12,7 +12,6 @@ import store from './reducers';
 import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import { State } from './types';
 import { autoLogin } from './reducers/auth';
-import Loader from './components/pageLoader';
 import Login from './routes/login';
 import Preparation from './routes/preparation';
 import Items from './routes/items';
@@ -25,7 +24,7 @@ toast.configure({
 });
 
 // TODO: corriger la locale
-//moment.locale('fr');
+moment.locale('fr');
 
 const MainRouter = () => {
   const dispatch = useDispatch();
