@@ -7,6 +7,9 @@ ENV NODE_ENV production
 WORKDIR /srv/app
 EXPOSE 8080
 
+ARG PREFIX
+ARG VITE_API_URL
+
 # Copy the package.json and yarn.lock. This is used to cache and avoid to download the dependencies every time
 # Force yarn to install the dependencies with yarn.lock and clear the cache
 COPY ./package.json ./yarn.lock ./
@@ -23,8 +26,8 @@ RUN yarn build
 # Run a second layer to run only the html
 FROM nginxinc/nginx-unprivileged:stable-alpine AS deployer
 
-# Redirect all url to index to be able to handle it as a router
-RUN sed -i '/index  index.html index.htm;/a try_files $uri $uri\/ \/index.html;' /etc/nginx/conf.d/default.conf
+# Add nginx conf to remove prefix
+COPY ./deployment/nginx/ /etc/nginx/conf.d/
 
 # Copy the build from the first layer to the second
 COPY --from=builder /srv/app/dist/ /usr/share/nginx/html/
