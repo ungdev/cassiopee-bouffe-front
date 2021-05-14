@@ -5,6 +5,7 @@ import moment from 'moment';
 import './navbar.scss';
 import { State } from '../types';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 
 interface PropTypes {
   back?: string;
@@ -13,6 +14,7 @@ interface PropTypes {
 }
 
 const Navbar = ({ back, onBack, children }: PropTypes) => {
+  const history = useHistory();
   const [time, setTime] = useState(moment().format('H[h]mm'));
   const name = useSelector((state: State) => state.auth.name);
 
@@ -30,7 +32,7 @@ const Navbar = ({ back, onBack, children }: PropTypes) => {
     }
 
     if (back) {
-      //history.push(back);
+      history.push(back);
     }
   };
 

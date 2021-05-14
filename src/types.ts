@@ -20,6 +20,8 @@ export interface Order {
   firstname: string;
   lastname: string;
   orderItems: OrderItem[];
+  status: Status;
+  createdAt: string;
 }
 
 export interface Vendor {
@@ -29,11 +31,11 @@ export interface Vendor {
 }
 
 export enum Status {
+  Cancelled = 'cancelled',
   Pending = 'pending',
   Preparing = 'preparing',
   Ready = 'ready',
   Finished = 'finished',
-  Cancelled = 'true',
 }
 
 // Redux

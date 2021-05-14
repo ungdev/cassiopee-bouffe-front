@@ -72,10 +72,10 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      transition: background-color 0.5s ease-in;
+      transition: background-color 0.3s ease-in;
 
       .fa {
-        transition: transform 0.5s ease-in, opacity 0.5s ease-in;
+        transition: transform 0.3s ease-in, opacity 0.3s ease-in;
       }
 
       &.downgrade {

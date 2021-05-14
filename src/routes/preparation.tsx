@@ -6,24 +6,25 @@ import moment from 'moment';
 import FontAwesome from 'react-fontawesome';
 import { useSelector } from 'react-redux';
 import { State, Order, Status } from '../types';
-import { upgradeOrder, downgradeOrder } from '../utils/orders';
 import { useLocation } from 'react-router';
-import { parse } from 'query-string';
 import Modal from '../components/modals/modal';
-import Loader from '../components/loader';
+import Loader from '../components/UI/loader';
 import Separator from '../components/UI/separator';
+import { API } from '../utils/api';
+
+const statusOrder = [
+  Status.Cancelled,
+  Status.Pending,
+  Status.Preparing,
+  Status.Ready,
+  Status.Finished,
+];
+
+const upgradeStatus = (status: Status) => statusOrder[statusOrder.indexOf(status) + 1];
+const downgradeStatus = (status: Status) => statusOrder[statusOrder.indexOf(status) - 1];
 
 const Preparation = () => {
-  const location = useLocation();
-  const queryParams = parse(location.search);
-  let orders = useSelector((state: State) => state.orders);
-
-  // Renvoie les commandes contenant au moins un item dans la catégory du paramètre
-  if (queryParams.only) {
-    orders = orders.filter((order) =>
-      order.orderItems.some((orderItem) => orderItem.item.category.key === queryParams.only),
-    );
-  }
+  const [orders, setOrders] = useState<Order[]>([]);
 
   // used only to refresh the component every minute
   const [tictac, setTicTac] = useState(false);
@@ -40,23 +41,44 @@ const Preparation = () => {
     return () => clearInterval(interval);
   });
 
+  // Fetch the orders
+  useEffect(() => {
+    API.get<Order[]>('/vendors/me/orders').then((response) => {
+      setOrders(response.data);
+    });
+  }, []);
+
   const editOrder = async (order: Order, confirmed = false) => {
     // If ready to be confirmed
-    if (order.status === Status.READY && !confirmed && !downgradeMode) {
+    if (order.status === Status.Ready && !confirmed && !downgradeMode) {
       setConfirmOrder(order);
     }
     // If ready to be cancelled
-    else if (order.status === Status.PENDING && !confirmed && downgradeMode) {
+    else if (order.status === Status.Pending && !confirmed && downgradeMode) {
       setConfirmOrder(order);
     } else {
       if (!loading) {
         setLoading(order);
         try {
-          if (!downgradeMode) {
-            await upgradeOrder(order);
+          const newStatus = downgradeMode
+            ? downgradeStatus(order.status)
+            : upgradeStatus(order.status);
+
+          const response = await API.patch<Order>(`/vendors/me/orders/${order.id}`, {
+            status: newStatus,
+          });
+
+          const orderIndex = orders.findIndex((findOrder) => findOrder.id === order.id);
+
+          // If the status is pending preparing or ready, update it in the state, otherwise, delete it
+          if ([Status.Pending, Status.Preparing, Status.Ready].includes(response.data.status)) {
+            setOrders([
+              ...orders.slice(0, orderIndex),
+              response.data,
+              ...orders.slice(orderIndex + 1),
+            ]);
           } else {
-            setDowngradeMode(false);
-            await downgradeOrder(order);
+            setOrders([...orders.slice(0, orderIndex), ...orders.slice(orderIndex + 1)]);
           }
         } catch (e) {}
         setLoading(null);
@@ -71,7 +93,7 @@ const Preparation = () => {
         {orders.map((order) => (
           <div className="order" key={order.id}>
             <div className="titles">
-              <span className="place">{order.place}</span>
+              <span className="place">#{order.displayId}</span>
               <span>{moment(order.createdAt).fromNow(true)}</span>
             </div>
             <ul className="items">
@@ -108,24 +130,24 @@ const Preparation = () => {
       <div id="preparation">
         <div className="status pending">
           <span className="title">En attente</span>
-          {displayOrders(orders.filter((order) => order.status === Status.PENDING))}
+          {displayOrders(orders.filter((order) => order.status === Status.Pending))}
         </div>
         <Separator />
         <div className="status preparing">
           <span className="title">Préparation</span>
-          {displayOrders(orders.filter((order) => order.status === Status.PREPARING))}
+          {displayOrders(orders.filter((order) => order.status === Status.Preparing))}
         </div>
         <Separator />
         <div className="status ready">
           <span className="title">Prêt</span>
-          {displayOrders(orders.filter((order) => order.status === Status.READY))}
+          {displayOrders(orders.filter((order) => order.status === Status.Ready))}
         </div>
       </div>
       <Modal className="preparation-modal" isOpen={!!confirmOrder}>
         {downgradeMode ? (
-          <p>Annuler la commande {confirmOrder && confirmOrder.place} ?</p>
+          <p>Annuler la commande {confirmOrder && confirmOrder.displayId} ?</p>
         ) : (
-          <p>La commande {confirmOrder && confirmOrder.place} a-t-elle bien été livrée ?</p>
+          <p>La commande {confirmOrder && confirmOrder.displayId} a-t-elle bien été livrée ?</p>
         )}
         <div className="actions">
           <div className="button cancel" onClick={() => setConfirmOrder(null)}>

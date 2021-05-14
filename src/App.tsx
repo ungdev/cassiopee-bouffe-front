@@ -14,6 +14,7 @@ import { State } from './types';
 import { autoLogin } from './reducers/auth';
 import Loader from './components/pageLoader';
 import Login from './routes/login';
+import Preparation from './routes/preparation';
 
 toast.configure({
   autoClose: 3000,
@@ -51,9 +52,9 @@ const MainRouter = () => {
     <Router>
       <Switch>
         <Route exact path="/" component={Index} />
+        <Route path="/preparation" component={Preparation} />
         <Redirect to="/" />
-        {/* <Route path="/preparation" component={Preparation} />
-          <Route path="/items" component={Items} /> */}
+        {/*  <Route path="/items" component={Items} /> */}
       </Switch>
     </Router>
   );
