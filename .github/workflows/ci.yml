@@ -65,7 +65,7 @@ jobs:
         run: oc project ${{ secrets.OPENSHIFT_PROJECT }}
 
       - name: Start the build
-        run: oc start build ${{ env.RESOURCE_NAME }} --follow
+        run: oc start-build ${{ env.RESOURCE_NAME }} --follow
 
       - uses: lazy-actions/slatify@master
         if: always()
