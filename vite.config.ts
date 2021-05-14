@@ -7,7 +7,7 @@ dotenv.config();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [reactRefresh()],
-  base: process.env.PREFIX || '/',
+  base: process.env.VITE_PREFIX || '/',
   server: {
     port: parseInt(process.env.PORT) || 8080,
   },

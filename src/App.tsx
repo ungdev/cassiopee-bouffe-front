@@ -36,8 +36,10 @@ const MainRouter = () => {
 
   if (!state.auth.token) return <Login />;
 
+  const prefix = import.meta.env.VITE_PREFIX || '/';
+
   return (
-    <Router>
+    <Router basename={prefix}>
       <Switch>
         <Route exact path="/" component={Index} />
         <Route path="/preparation" component={Preparation} />

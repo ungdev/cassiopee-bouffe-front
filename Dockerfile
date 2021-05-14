@@ -7,7 +7,7 @@ ENV NODE_ENV production
 WORKDIR /srv/app
 EXPOSE 8080
 
-ARG PREFIX
+ARG VITE_PREFIX
 ARG VITE_API_URL
 
 # Copy the package.json and yarn.lock. This is used to cache and avoid to download the dependencies every time
