@@ -27,6 +27,7 @@ export interface Order {
 export interface Vendor {
   id: string;
   name: string;
+  items: Item[];
 }
 
 export enum Status {
@@ -40,7 +41,6 @@ export enum Status {
 // Redux
 export interface State {
   auth: AuthState;
-  server: ServerState;
 }
 
 export interface Action {
@@ -53,8 +53,4 @@ export type GetState = () => State;
 
 export interface AuthState extends Vendor {
   token: string;
-}
-
-export interface ServerState {
-  socketConnected: boolean;
 }
