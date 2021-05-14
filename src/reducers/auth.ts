@@ -50,10 +50,10 @@ export const logout = () => (dispatch: Dispatch) => {
 };
 
 export const tryLogin = (pin: string) => async (dispatch: Dispatch) => {
-  const res = await API.post<AuthState>(`/vendors/login`, { pin });
-  const vendor = res.data;
-  localStorage.setItem(BOUFFE_TOKEN, vendor.token);
-  dispatch(setVendor(vendor));
+  const res = await API.post<{ vendor: Vendor; token: string }>(`/vendors/login`, { pin });
+  const { vendor, token } = res.data;
+  localStorage.setItem(BOUFFE_TOKEN, token);
+  dispatch(setVendor({ token, ...vendor }));
   toast.success('Connexion validée');
 };
 
@@ -62,7 +62,8 @@ export const autoLogin = () => async (dispatch: Dispatch) => {
     const token = localStorage.getItem(BOUFFE_TOKEN) as string;
 
     try {
-      const response = await API.post<Vendor>('/vendors/me', { token });
+      setAPIToken(token);
+      const response = await API.get<Vendor>('/vendors/me');
       const vendor = response.data;
 
       dispatch(setVendor({ token, ...vendor }));

@@ -10,7 +10,8 @@ const requestAPI = <T>(method: Method, route: string, body?: object) => {
         baseURL: import.meta.env.VITE_API_URL,
         method,
         headers: {
-          Authorization: token ? `Bearer ${token}` : undefined,
+          Authorization: token ? `Bearer ${token}` : '',
+          'Content-Type': 'application/json',
         },
         url: route,
         data: body,

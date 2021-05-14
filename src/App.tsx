@@ -9,7 +9,7 @@ import './App.scss';
 import Index from './routes';
 
 import store from './reducers';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom';
 import { State } from './types';
 import { autoLogin } from './reducers/auth';
 import Loader from './components/pageLoader';
@@ -35,24 +35,24 @@ const MainRouter = () => {
 
   if (!state.auth.token) return <Login />;
 
-  if (!state.server.socketConnected) {
-    return (
-      <Loader>
-        <div onClick={() => window.location.reload()}>
-          Serveur déconnecté
-          <br />
-          Tentative de reconnexion en cours
-        </div>
-      </Loader>
-    );
-  }
+  // if (!state.server.socketConnected) {
+  //   return (
+  //     <Loader>
+  //       <div onClick={() => window.location.reload()}>
+  //         Serveur déconnecté
+  //         <br />
+  //         Tentative de reconnexion en cours
+  //       </div>
+  //     </Loader>
+  //   );
+  // }
 
   return (
     <Router>
       <Switch>
         <Route exact path="/" component={Index} />
+        <Redirect to="/" />
         {/* <Route path="/preparation" component={Preparation} />
-          <Route path="/tv" component={Tv} />
           <Route path="/items" component={Items} /> */}
       </Switch>
     </Router>
