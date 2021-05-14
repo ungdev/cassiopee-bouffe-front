@@ -4,7 +4,7 @@ export interface Item {
   id: number;
   name: string;
   description: string;
-  price: Number;
+  price: number;
   available: boolean;
 }
 

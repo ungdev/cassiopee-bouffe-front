@@ -15,6 +15,7 @@ import { autoLogin } from './reducers/auth';
 import Loader from './components/pageLoader';
 import Login from './routes/login';
 import Preparation from './routes/preparation';
+import Items from './routes/items';
 
 toast.configure({
   autoClose: 3000,
@@ -36,25 +37,13 @@ const MainRouter = () => {
 
   if (!state.auth.token) return <Login />;
 
-  // if (!state.server.socketConnected) {
-  //   return (
-  //     <Loader>
-  //       <div onClick={() => window.location.reload()}>
-  //         Serveur déconnecté
-  //         <br />
-  //         Tentative de reconnexion en cours
-  //       </div>
-  //     </Loader>
-  //   );
-  // }
-
   return (
     <Router>
       <Switch>
         <Route exact path="/" component={Index} />
         <Route path="/preparation" component={Preparation} />
+        <Route path="/items" component={Items} />
         <Redirect to="/" />
-        {/*  <Route path="/items" component={Items} /> */}
       </Switch>
     </Router>
   );

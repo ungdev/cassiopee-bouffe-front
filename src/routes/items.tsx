@@ -1,64 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './items.scss';
 import Navbar from '../components/navbar';
-import Switch from '../components/switch';
+import Switch from '../components/UI/switch';
 import { useSelector } from 'react-redux';
-import { State, Item as ItemType, Category as CategoryType } from '../types';
+import { State, Item as ItemType, Order, Vendor } from '../types';
 import FontAwesome from 'react-fontawesome';
-import { formatPrice } from '../utils/format';
-import { toogleItemAvailable } from '../utils/items';
+import { formatPrice } from '../utils/helpers';
+import { API } from '../utils/api';
 
-const Item = ({ item }: { item: ItemType }) => {
+const Item = ({
+  item,
+  onUpdateItem,
+}: {
+  item: ItemType;
+  onUpdateItem: (item: ItemType) => void;
+}) => {
+  const toogleItem = async () => {
+    const updatedItem = await API.patch<ItemType>(`/vendors/me/items/${item.id}`, {
+      available: !item.available,
+    });
+
+    onUpdateItem(updatedItem.data);
+  };
+
   return (
-    <div className="item" onClick={() => toogleItemAvailable(item.id)}>
+    <div className="item" onClick={toogleItem}>
       <div className="left-side">
         <Switch on={item.available} />
         <span>{item.name}</span>
       </div>
-      <div>
-        {formatPrice(item.orgaPrice)} - {formatPrice(item.price)}
-      </div>
+      <div>{formatPrice(item.price)}</div>
     </div>
   );
 };
-
-const Category = ({ category }: { category: CategoryType }) => {
-  const [isOpen, setOpen] = useState(false);
-
-  return (
-    <div className="category">
-      <div className="title" onClick={() => setOpen(!isOpen)}>
-        <FontAwesome name={`chevron-right ${isOpen ? 'open' : ''}`} className="icon" />
-        {category.name}
-      </div>
-      {isOpen && (
-        <div className="items">
-          {category.items.map((item, itemIndex) => (
-            <Item item={item} key={itemIndex} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-export const itemsAvailable = (categories: Array<CategoryType>) =>
-  categories.reduce((acc, curr) => {
-    return acc + curr.items.filter((item) => item.available).length;
-  }, 0);
 
 const Items = () => {
-  const categories = useSelector((state: State) => state.categories);
+  const [items, setItems] = useState<ItemType[]>([]);
+
+  // Fetch the items
+  useEffect(() => {
+    API.get<Vendor>('/vendors/me').then((response) => {
+      setItems(response.data.items);
+    });
+  }, []);
+
+  const updateItem = (item: ItemType) => {
+    const itemIndex = items.findIndex((findItem) => findItem.id === item.id);
+
+    setItems([...items.slice(0, itemIndex), item, ...items.slice(itemIndex + 1)]);
+  };
 
   return (
     <>
       <Navbar back="/" />
       <div id="items">
-        <div className="stats">Items disponibles : {itemsAvailable(categories)}</div>
+        <div className="stats">
+          Items disponibles : {items.filter((item) => item.available).length}
+        </div>
         <div className="categories">
-          {categories.map((category, categoryIndex) => (
-            <Category category={category} key={categoryIndex} />
+          {items.map((item) => (
+            <Item item={item} key={item.id} onUpdateItem={updateItem} />
           ))}
         </div>
       </div>
